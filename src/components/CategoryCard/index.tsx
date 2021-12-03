@@ -1,4 +1,4 @@
-// import Link from 'next/Link'
+import Link from 'next/link'
 
 import { Wrapper } from './styles'
 
@@ -10,12 +10,11 @@ type Card = {
 
 export function CategoryCard({ title, emoji, slug }: Card) {
   return (
-    // <Link href={slug}>
-    //   <Wrapper>
-    //     <p>{emoji}</p>
-    //     <h2>{title}</h2>
-    //   </Wrapper>
-    // </Link>
-    <h1>teste</h1>
+    <Link href={`/${slug}`}>
+      <Wrapper>
+        <p>{emoji}</p>
+        <h2>{title}</h2>
+      </Wrapper>
+    </Link>
   )
 }
