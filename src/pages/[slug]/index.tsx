@@ -32,24 +32,21 @@ const Category: NextPage = () => {
       content: [
         {
           title: 'Maze',
-          image:
-            'http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fimage%2Fsrc%2Fpublic%2Fmaze.3a14cc23e503d8f03e8803f435d6cc48.png&w=1920&q=75',
+          image: 'https://i.imgur.com/IA7jVfJ.png',
           slug: 'maze0',
           tag: 'Usability test',
           link: 'https://maze.co/',
         },
         {
           title: 'Maze',
-          image:
-            'http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fimage%2Fsrc%2Fpublic%2Fmaze.3a14cc23e503d8f03e8803f435d6cc48.png&w=1920&q=75',
+          image: 'https://i.imgur.com/IA7jVfJ.png',
           slug: 'maze1',
           tag: 'Usability test',
           link: 'https://maze.co/',
         },
         {
           title: 'Maze',
-          image:
-            'http://localhost:3000/_next/image?url=%2F_next%2Fstatic%2Fimage%2Fsrc%2Fpublic%2Fmaze.3a14cc23e503d8f03e8803f435d6cc48.png&w=1920&q=75',
+          image: 'https://i.imgur.com/IA7jVfJ.png',
           slug: 'maze2',
           tag: 'Usability test',
           link: 'https://maze.co/',
