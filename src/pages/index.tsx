@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { CardGroup } from '../components/CardGroup'
 import { Footer } from '../components/Footer'
 
-import { PageWrapper, Title } from './styles'
+import { PageWrapper, Title } from '../styles/general'
 
 import growthSVG from '../public/growth.svg'
 

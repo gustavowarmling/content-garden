@@ -4,9 +4,7 @@ import { CardGroup } from '../../components/CardGroup'
 import { CategoryHeader } from '../../components/CategoryHeader'
 import { ContentGroup } from '../../components/ContentGroup'
 import { Footer } from '../../components/Footer'
-import { PageWrapper } from '../styles'
-
-import mazePng from '../../public/maze.png'
+import { PageWrapper } from '../../styles/general'
 
 const Category: NextPage = () => {
   const router = useRouter()
