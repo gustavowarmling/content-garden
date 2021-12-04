@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const PageWrapper = styled.main`
   max-width: 1200px;
   min-height: 100vh;
-  margin: 0 auto;
+  margin: 5rem auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
