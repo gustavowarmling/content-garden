@@ -29,14 +29,6 @@ interface HomeProps {
 }
 
 export default function Home({ homeProps, categories = [] }: HomeProps) {
-  // const cardsData = [
-  //   { title: 'UX Design', emoji: `✏️`, slug: 'ux-design0' },
-  //   { title: 'UX Design', emoji: `✏️`, slug: 'ux-design1' },
-  //   { title: 'UX Design', emoji: `✏️`, slug: 'ux-design2' },
-  //   { title: 'UX Design', emoji: `✏️`, slug: 'ux-design3' },
-  //   { title: 'UX Design', emoji: `✏️`, slug: 'ux-design4' },
-  // ]
-
   const { svg, title } = homeProps[0]
 
   return (
@@ -53,7 +45,7 @@ export default function Home({ homeProps, categories = [] }: HomeProps) {
       <Title>{title}</Title>
 
       <Image
-        src={growthSVG}
+        src={svg}
         alt="Desenho de um garoto regando uma planta"
         height="1200px"
         width="1200px"
