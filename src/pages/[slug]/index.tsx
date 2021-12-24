@@ -1,136 +1,124 @@
-import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { CardGroup } from '../../components/CardGroup'
+import { GetServerSideProps } from 'next'
+import { getPrismicClient } from '../../services/prismic'
+import { RichText } from 'prismic-dom'
+
 import { CategoryHeader } from '../../components/CategoryHeader'
 import { ContentGroup } from '../../components/ContentGroup'
 import { Footer } from '../../components/Footer'
 import { PageWrapper } from '../../styles/general'
 
-const Category: NextPage = () => {
-  const router = useRouter()
+type PageData = {
+  title: string
+  emoji: string
+}
 
-  const { slug } = router.query
+type Content = {
+  title: string
+  image?: string
+  slug: string
+  tag: string
+  link: string
+}
 
-  const data = {
-    title: 'UX Design',
-    image: `✏️`,
-    slug: slug,
-    hasCategories: false,
-    cardsData: [
-      { title: 'UX Design', emoji: `✏️`, slug: 'ux-design0' },
-      { title: 'UX Design', emoji: `✏️`, slug: 'ux-design1' },
-      { title: 'UX Design', emoji: `✏️`, slug: 'ux-design2' },
-      { title: 'UX Design', emoji: `✏️`, slug: 'ux-design3' },
-      { title: 'UX Design', emoji: `✏️`, slug: 'ux-design4' },
-    ],
-  }
+type Section = {
+  title: string
+  hasBanner: boolean
+  content: Content[]
+}
 
-  const contentSections = [
-    {
-      title: 'Tools',
-      hasBanner: true,
-      content: [
-        {
-          title: 'Maze',
-          image: 'https://i.imgur.com/IA7jVfJ.png',
-          slug: 'maze0',
-          tag: 'Usability test',
-          link: 'https://maze.co/',
-        },
-        {
-          title: 'Maze',
-          image: 'https://i.imgur.com/IA7jVfJ.png',
-          slug: 'maze1',
-          tag: 'Usability test',
-          link: 'https://maze.co/',
-        },
-        {
-          title: 'Maze',
-          image: 'https://i.imgur.com/IA7jVfJ.png',
-          slug: 'maze2',
-          tag: 'Usability test',
-          link: 'https://maze.co/',
-        },
-      ],
-    },
-    {
-      title: 'Articles',
-      hasBanner: false,
-      content: [
-        {
-          title: 'How Long Do Users Stay on Web Pages?',
-          description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit aperiam.',
-          slug: 'nngroup0',
-          link: 'https://nngroup.com/',
-        },
-        {
-          title: 'How Long Do Users Stay on Web Pages?',
-          description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit aperiam.',
-          slug: 'nngroup1',
-          link: 'https://nngroup.com/',
-        },
-        {
-          title: 'How Long Do Users Stay on Web Pages?',
-          description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit aperiam.',
-          slug: 'nngroup2',
-          link: 'https://nngroup.com/',
-        },
-      ],
-    },
-    {
-      title: 'Books',
-      hasBanner: false,
-      content: [
-        {
-          title: 'How Long Do Users Stay on Web Pages?',
-          description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit aperiam.',
-          slug: 'books0',
-          link: 'https://books.com/',
-        },
-        {
-          title: 'How Long Do Users Stay on Web Pages?',
-          description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit aperiam.',
-          slug: 'books1',
-          link: 'https://books.com/',
-        },
-        {
-          title: 'How Long Do Users Stay on Web Pages?',
-          description:
-            'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit aperiam.',
-          slug: 'books2',
-          link: 'https://books.com/',
-        },
-      ],
-    },
-  ]
+type CategoryProps = {
+  data: PageData
+  sections: Section[]
+}
 
+export default function Category({ data, sections }: CategoryProps) {
   return (
     <PageWrapper>
-      <CategoryHeader title={data.title} image={data.image} />
+      <CategoryHeader title={data.title} image={data.emoji} />
 
-      {!!data.hasCategories ? (
-        <CardGroup cards={data.cardsData} />
-      ) : (
-        <>
-          {contentSections.map((section) => (
-            <ContentGroup
-              cards={section.content}
-              title={section.title}
-              hasBanner={section.hasBanner}
-              key={section.title}
-            />
-          ))}
-        </>
-      )}
+      {sections.map((section) => (
+        <ContentGroup
+          cards={section.content}
+          title={section.title}
+          hasBanner={section.hasBanner}
+          key={section.title}
+        />
+      ))}
 
       <Footer />
     </PageWrapper>
   )
 }
 
-export default Category
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  params,
+}) => {
+  if (!params) {
+    return {
+      props: {
+        data: {},
+        sections: [],
+      },
+    }
+  }
+  const { slug } = params
+
+  const prismic = getPrismicClient(req)
+
+  const response = await prismic?.getByUID('category', String(slug), {})
+
+  const data = {
+    title: RichText.asText(response?.data?.title),
+    emoji: RichText.asText(response?.data?.emoji),
+  }
+
+  const sectionsArray = response?.data.body
+
+  if (!sectionsArray) {
+    return {
+      props: {
+        data: {},
+        sections: [],
+      },
+    }
+  }
+
+  const sections = sectionsArray?.map((section: any) => {
+    if (section.slice_type === 'text_cards') {
+      return {
+        title: RichText.asText(section.primary.section_title),
+        hasBanner: false,
+        content: section?.items?.map((item: any) => {
+          return {
+            title: RichText.asText(item.post_title),
+            description: RichText.asText(item.post_description),
+            slug: RichText.asText(item.post_title),
+            link: item.post_link.url,
+          }
+        }),
+      }
+    }
+
+    return {
+      title: RichText.asText(section.primary['section-title']),
+      hasBanner: true,
+      content: section?.items?.map((item: any) => {
+        return {
+          title: RichText.asText(item.card_title),
+          image: item.card_image.url,
+          slug: RichText.asText(item.card_title),
+          tag: RichText.asText(item.card_tag),
+          link: item.card_link.url,
+        }
+      }),
+    }
+  })
+
+  return {
+    props: {
+      data,
+      sections,
+    },
+  }
+}

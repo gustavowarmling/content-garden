@@ -61,6 +61,7 @@ export const TextCard = styled.div`
   width: 100%;
   padding: 1rem;
   display: flex;
+  color: var(--color-black);
   flex-direction: column;
   gap: 0.5rem;
   box-shadow: var(--shadow-1);

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { CategoryCard } from '../CategoryCard'
 
 import {
@@ -33,7 +32,7 @@ export function ContentGroup({ cards, title, hasBanner }: CategoryCard) {
       {hasBanner ? (
         <Wrapper>
           {cards.map((card) => (
-            <Link href={card.link} key={card.slug}>
+            <a href={card.link} key={card.slug} target="_blank">
               <Card>
                 <ImageWrapper>
                   <img src={card?.image} alt={card.title} />
@@ -44,19 +43,19 @@ export function ContentGroup({ cards, title, hasBanner }: CategoryCard) {
                   <Tag>{card?.tag}</Tag>
                 </section>
               </Card>
-            </Link>
+            </a>
           ))}
         </Wrapper>
       ) : (
         <FullWrapper>
           {cards.map((card) => (
-            <Link href={card.link} key={card.slug}>
+            <a href={card.link} key={card.slug} target="_blank">
               <TextCard>
                 <h3>{card.title}</h3>
                 <p>{card?.description}</p>
                 <span>{card.link}</span>
               </TextCard>
-            </Link>
+            </a>
           ))}
         </FullWrapper>
       )}
