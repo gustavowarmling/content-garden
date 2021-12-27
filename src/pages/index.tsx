@@ -1,4 +1,4 @@
-import type { GetStaticProps } from 'next'
+import type { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import { getPrismicClient } from '../services/prismic'
@@ -26,9 +26,7 @@ interface HomeProps {
   categories: Category[]
 }
 
-export default function Home({ homeProps, categories = [] }: HomeProps) {
-  const { svg, title } = homeProps[0]
-
+export default function Home({ homeProps, categories }: HomeProps) {
   return (
     <PageWrapper>
       <Head>
@@ -40,10 +38,10 @@ export default function Home({ homeProps, categories = [] }: HomeProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Title>{title}</Title>
+      <Title>{homeProps[0]?.title}</Title>
 
       <Image
-        src={svg}
+        src={homeProps[0]?.svg}
         alt="Desenho de um garoto regando uma planta"
         height="1200px"
         width="1200px"
@@ -56,7 +54,7 @@ export default function Home({ homeProps, categories = [] }: HomeProps) {
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const prismic = getPrismicClient()
 
   const homeResponse = await prismic?.query(

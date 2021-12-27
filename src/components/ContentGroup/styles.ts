@@ -50,6 +50,8 @@ export const Card = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
+    color: var(--color-black);
   }
 
   &:hover {
