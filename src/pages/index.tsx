@@ -38,10 +38,10 @@ export default function Home({ homeProps, categories }: HomeProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Title>{homeProps[0]?.title}</Title>
+      <Title>{homeProps[0].title}</Title>
 
       <Image
-        src={homeProps[0]?.svg}
+        src={homeProps[0].svg}
         alt="Desenho de um garoto regando uma planta"
         height="1200px"
         width="1200px"
@@ -57,7 +57,16 @@ export default function Home({ homeProps, categories }: HomeProps) {
 export const getServerSideProps: GetServerSideProps = async () => {
   const prismic = getPrismicClient()
 
-  const homeResponse = await prismic?.query(
+  if (!prismic) {
+    return {
+      props: {
+        homeProps: [],
+        categories: [],
+      },
+    }
+  }
+
+  const homeResponse = await prismic.query(
     [Prismic.predicates.at('document.type', 'home')],
     {
       fetch: ['home.title', 'home.svg'],
@@ -65,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
   )
 
-  const categoriesResponse = await prismic?.query(
+  const categoriesResponse = await prismic.query(
     [Prismic.predicates.at('document.type', 'category')],
     {
       fetch: ['category.uid', 'category.title', 'category.emoji'],
@@ -73,7 +82,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
   )
 
-  const homeProps = homeResponse?.results.map((home) => {
+  const homeProps = homeResponse.results.map((home) => {
     const { title, svg } = home.data
 
     return {
@@ -82,7 +91,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     }
   })
 
-  const categories = categoriesResponse?.results.map((category) => {
+  const categories = categoriesResponse.results.map((category) => {
     const { title, emoji } = category.data
 
     return {

@@ -66,14 +66,23 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   const prismic = getPrismicClient(req)
 
-  const response = await prismic?.getByUID('category', String(slug), {})
-
-  const data = {
-    title: RichText.asText(response?.data?.title),
-    emoji: RichText.asText(response?.data?.emoji),
+  if (!prismic) {
+    return {
+      props: {
+        data: {},
+        sections: [],
+      },
+    }
   }
 
-  const sectionsArray = response?.data.body
+  const response = await prismic.getByUID('category', String(slug), {})
+
+  const data = {
+    title: RichText.asText(response.data.title),
+    emoji: RichText.asText(response.data.emoji),
+  }
+
+  const sectionsArray = response.data.body
 
   if (!sectionsArray) {
     return {
@@ -84,12 +93,12 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   }
 
-  const sections = sectionsArray?.map((section: any) => {
+  const sections = sectionsArray.map((section: any) => {
     if (section.slice_type === 'text_cards') {
       return {
         title: RichText.asText(section.primary.section_title),
         hasBanner: false,
-        content: section?.items?.map((item: any) => {
+        content: section.items.map((item: any) => {
           return {
             title: RichText.asText(item.post_title),
             description: RichText.asText(item.post_description),
@@ -103,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     return {
       title: RichText.asText(section.primary['section-title']),
       hasBanner: true,
-      content: section?.items?.map((item: any) => {
+      content: section.items.map((item: any) => {
         return {
           title: RichText.asText(item.card_title),
           image: item.card_image.url,
