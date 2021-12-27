@@ -26,7 +26,15 @@ interface HomeProps {
   categories: Category[]
 }
 
-export default function Home({ homeProps, categories }: HomeProps) {
+const defaultValue = {
+  title: 'UX Design • Open Style Guide',
+  svg: '✍',
+}
+
+export default function Home({
+  homeProps = [defaultValue],
+  categories,
+}: HomeProps) {
   return (
     <PageWrapper>
       <Head>
@@ -54,17 +62,8 @@ export default function Home({ homeProps, categories }: HomeProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const prismic = getPrismicClient()
-
-  if (!prismic) {
-    return {
-      props: {
-        homeProps: [],
-        categories: [],
-      },
-    }
-  }
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const prismic = getPrismicClient(req)
 
   const homeResponse = await prismic.query(
     [Prismic.predicates.at('document.type', 'home')],

@@ -27,14 +27,14 @@ type Section = {
 }
 
 type CategoryProps = {
-  data: PageData
+  pageData: PageData
   sections: Section[]
 }
 
-export default function Category({ data, sections }: CategoryProps) {
+export default function Category({ pageData, sections }: CategoryProps) {
   return (
     <PageWrapper>
-      <CategoryHeader title={data.title} image={data.emoji} />
+      <CategoryHeader title={pageData?.title} image={pageData?.emoji} />
 
       {sections.map((section) => (
         <ContentGroup
@@ -54,46 +54,17 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   params,
 }) => {
-  if (!params) {
-    return {
-      props: {
-        data: {},
-        sections: [],
-      },
-    }
-  }
   const { slug } = params
-
   const prismic = getPrismicClient(req)
-
-  if (!prismic) {
-    return {
-      props: {
-        data: {},
-        sections: [],
-      },
-    }
-  }
 
   const response = await prismic.getByUID('category', String(slug), {})
 
-  const data = {
+  const pageData = {
     title: RichText.asText(response.data.title),
     emoji: RichText.asText(response.data.emoji),
   }
 
-  const sectionsArray = response.data.body
-
-  if (!sectionsArray) {
-    return {
-      props: {
-        data: {},
-        sections: [],
-      },
-    }
-  }
-
-  const sections = sectionsArray.map((section: any) => {
+  const sections = response.data.body.map((section: any) => {
     if (section.slice_type === 'text_cards') {
       return {
         title: RichText.asText(section.primary.section_title),
@@ -126,7 +97,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   return {
     props: {
-      data,
+      pageData,
       sections,
     },
   }
