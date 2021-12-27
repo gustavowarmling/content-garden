@@ -10,7 +10,7 @@ export function Footer() {
         <Link href="https://www.linkedin.com/in/gustavowarmling/">
           Gustavo Warmling
         </Link>
-        and curated by
+        and designed by
         <Link href="http://mateusvillain.com/">Mateus Villain</Link>
       </Text>
     </Wrapper>
